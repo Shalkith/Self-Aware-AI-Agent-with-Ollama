@@ -17,7 +17,7 @@ This project implements a self-aware AI agent that can perceive its environment 
 
 ## Architecture
 
-See [AGENT_ARCHITECTURE.md](AGENT_ARCHITECTURE.md) for detailed architecture documentation.
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for detailed architecture documentation.
 
 ```
 ollama_self_aware_robot/
@@ -29,28 +29,11 @@ ollama_self_aware_robot/
 │   │   └── main.py
 │   ├── agent.md             # Agent configuration
 │   └── heartbeat.md         # Periodic tasks
-├── agent_server.py          # Web server
-├── config.py                # Configuration
-├── reset.py                 # Reset script
-├── init.py                  # Initialization script
-├── start_agent.py           # Startup script
-├── test_setup.py            # Setup test script
-├── run_tests.py             # Test runner
-├── requirements.txt         # Dependencies
-├── README.md                # Project overview
-├── USAGE.md                 # Usage guide
-├── SECURITY.md              # Security framework documentation
-├── SELF_IMPROVEMENT.md      # Self-improvement guide
-├── AGENT_ARCHITECTURE.md    # Architecture documentation
-├── PROJECT_SUMMARY.md       # Detailed project summary
-├── start_agent.bat          # Windows startup script
-├── reset_agent.bat          # Windows reset script
-├── client/                  # Web client interface
-│   ├── static/
-│   │   ├── css/
-│   │   └── js/
-│   └── templates/
-├── perception/              # Camera, mic, speaker modules
+├── security/                # Security framework
+│   ├── llm_security_agent.py
+│   ├── llm_file_interceptor.py
+│   └── api_endpoints.py
+├── perception/              # Sensor modules
 │   ├── camera.py
 │   ├── microphone.py
 │   └── speaker.py
@@ -58,11 +41,20 @@ ollama_self_aware_robot/
 │   └── memory_manager.py
 ├── devices/                 # Device control
 │   └── device_controller.py
-├── security/                # Security framework
-│   ├── llm_security_agent.py
-│   ├── llm_file_interceptor.py
-│   └── api_endpoints.py
-└── api_endpoints.py         # Additional API endpoints
+├── client/                  # Web interface
+│   ├── static/
+│   └── templates/
+├── tests/                   # Test suite
+│   └── ...
+├── docs/                    # Documentation
+│   └── ...
+├── scripts/                 # Utility scripts
+│   ├── start_agent.py
+│   └── ...
+├── agent_server.py          # Web server entry point
+├── config.py                # Configuration
+├── requirements.txt         # Dependencies
+└── README.md                # Project overview
 ```
 
 ## Requirements
@@ -141,15 +133,30 @@ The web interface provides:
 To reset the agent and clear all memories:
 
 ```bash
-python reset.py
+python scripts/reset.py
 ```
 
-Or on Windows, double-click `reset_agent.bat`
+Or on Windows:
+```bash
+scripts\reset_agent.bat
+```
 
 Options:
 - `--full`: Completely reset the database
 - `--memory-only`: Reset only memories and experiences
 - `--config`: Reset configuration to defaults
+
+## Startup Scripts
+
+Alternative startup scripts are available in the `scripts/` folder:
+
+```bash
+# Interactive startup with mode selection
+python scripts/start_agent_modern.py
+
+# Initialize environment and check dependencies
+python scripts/init.py
+```
 
 ## API Endpoints
 
@@ -164,11 +171,11 @@ The agent server provides several API endpoints:
 
 ## Documentation
 
-- [USAGE.md](USAGE.md): Detailed usage guide
-- [SECURITY.md](SECURITY.md): Security framework documentation
-- [SELF_IMPROVEMENT.md](SELF_IMPROVEMENT.md): Guide to safe self-improvement
-- [PROJECT_SUMMARY.md](PROJECT_SUMMARY.md): Comprehensive project overview
-- [config.py](config.py): Configuration options
+- [docs/USAGE.md](docs/USAGE.md): Detailed usage guide
+- [docs/SECURITY.md](docs/SECURITY.md): Security framework documentation
+- [docs/SELF_IMPROVEMENT.md](docs/SELF_IMPROVEMENT.md): Guide to safe self-improvement
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md): Architecture documentation
+- [docs/CONFIGURATION.md](docs/CONFIGURATION.md): Configuration options
 
 ## Contributing
 

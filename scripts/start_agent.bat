@@ -22,6 +22,8 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
+REM Change to parent directory (project root)
+cd ..\n
 REM Start the agent server
 echo Starting agent server...
 python agent_server.py

@@ -13,6 +13,9 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
+REM Change to parent directory (project root)
+cd ..\
+
 echo Choose startup mode:
 echo 1. Web Server Mode (default)
 echo 2. Interactive CLI Mode

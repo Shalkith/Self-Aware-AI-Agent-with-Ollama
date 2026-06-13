@@ -13,8 +13,11 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
+REM Change to parent directory (project root)
+cd ..\
+
 REM Run the reset script
 echo Resetting agent...
-python reset.py
+python scripts\reset.py
 
 pause

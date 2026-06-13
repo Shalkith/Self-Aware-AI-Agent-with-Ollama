@@ -14,7 +14,7 @@ def main():
     print("=" * 40)
 
     # Change to project directory
-    project_dir = Path(__file__).parent
+    project_dir = Path(__file__).parent.parent
     os.chdir(project_dir)
 
     print("Choose startup mode:")

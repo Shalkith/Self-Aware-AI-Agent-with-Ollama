@@ -36,7 +36,7 @@ def start_agent_server():
     try:
         print("Starting agent server...")
         # Change to the project directory
-        project_dir = Path(__file__).parent
+        project_dir = Path(__file__).parent.parent
         os.chdir(project_dir)
 
         # Start the agent server

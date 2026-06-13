@@ -63,9 +63,10 @@ ollama_self_aware_robot/
 ├── devices/                 # Device control
 │   └── device_controller.py
 ├── tests/                   # Test suite
-│   ├── test_setup.py
-│   ├── test_senses.py
-│   ├── test_security_agent.py
+│   └── ...
+├── scripts/                 # Utility scripts
+│   └── ...
+├── docs/                    # Documentation
 │   └── ...
 ├── client/                  # Web interface
 │   ├── templates/
@@ -143,11 +144,11 @@ See `tests/README.md` for complete test documentation.
 
 ## Documentation
 
-- `AGENT_ARCHITECTURE.md`: Detailed architecture documentation
-- `SECURITY.md`: Security framework documentation
-- `SELF_IMPROVEMENT.md`: Self-improvement guidelines
-- `USAGE.md`: Usage instructions
-- `CONFIGURATION.md`: Configuration options
+- `docs/ARCHITECTURE.md`: Detailed architecture documentation
+- `docs/SECURITY.md`: Security framework documentation
+- `docs/SELF_IMPROVEMENT.md`: Self-improvement guidelines
+- `docs/USAGE.md`: Usage instructions
+- `docs/CONFIGURATION.md`: Configuration options
 
 ## Contributing
 
