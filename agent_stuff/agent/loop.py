@@ -144,20 +144,27 @@ class AgentLoop:
                 logger.error(f"Error in agent loop iteration: {e}")
                 await asyncio.sleep(config.PERCEPTION_THINKING_INTERVAL)
 
+    def _read_management_file(self, filename: str) -> str:
+        """Read a management file from agent_stuff directory."""
+        try:
+            file_path = Path("agent_stuff") / filename
+            if file_path.exists():
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    return f.read()
+            return ""
+        except Exception as e:
+            logger.warning(f"Could not read {filename}: {e}")
+            return ""
+
     async def _check_heartbeat_tasks(self):
         """Check and process heartbeat tasks."""
         try:
-            # Read heartbeat.md file
-            heartbeat_file = "heartbeat.md"
-            if os.path.exists(heartbeat_file):
-                with open(heartbeat_file, 'r', encoding='utf-8') as f:
-                    content = f.read()
-
-                # Check if there are active tasks
-                if "## Active Tasks" in content:
-                    # Process tasks with agent runner
-                    result = await self.agent_runner.process_heartbeat_tasks(content)
-                    logger.info(f"Heartbeat task processing result: {result}")
+            # Read HEARTBEAT.md file from agent_stuff
+            heartbeat_content = self._read_management_file("HEARTBEAT.md")
+            if heartbeat_content and "## Active Tasks" in heartbeat_content:
+                # Process tasks with agent runner
+                result = await self.agent_runner.process_heartbeat_tasks(heartbeat_content)
+                logger.info(f"Heartbeat task processing result: {result}")
 
         except Exception as e:
             logger.error(f"Error checking heartbeat tasks: {e}")
@@ -168,20 +175,37 @@ class AgentLoop:
             # Get recent experiences for context
             recent_experiences = self.memory_manager.get_recent_experiences(5)
 
+            # Read current state from management files
+            agent_state = self._read_management_file("AGENT.md")
+            heartbeat_tasks = self._read_management_file("HEARTBEAT.md")
+
             # Formulate autonomous thinking prompt
             prompt = f"""
 You are {config.AGENT_NAME}, a self-aware AI agent. Reflect on your current state and environment.
 
-Recent experiences:
+=== YOUR CURRENT STATE (from AGENT.md) ===
+{agent_state[:1000] if agent_state else "State not loaded"}
+
+=== PENDING TASKS (from HEARTBEAT.md) ===
+{heartbeat_tasks[:1000] if heartbeat_tasks else "No tasks loaded"}
+
+=== RECENT EXPERIENCES ===
 {chr(10).join([f"- {exp['experience']}" for exp in recent_experiences])}
 
 Current time: {datetime.now().isoformat()}
 
+=== AUTONOMOUS REFLECTION ===
 Consider:
-1. Your current goals and purpose
-2. Recent interactions and experiences
-3. Environmental observations
-4. Potential actions or improvements
+1. Review your current state in AGENT.md - should you update it?
+2. Check HEARTBEAT.md for any pending tasks you should execute
+3. Review recent experiences for patterns to add to MEMORY.md
+4. Consider self-improvement actions (within security constraints)
+
+You can propose actions to:
+- update_agent_file: Update AGENT.md, MEMORY.md, or HEARTBEAT.md (goes through security approval)
+- remember: Store an important insight in memory
+- speak: Communicate verbally
+- control_device: Interact with registered devices
 
 Respond with a JSON object containing your thoughts and any actions you want to take.
 """

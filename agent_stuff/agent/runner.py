@@ -2,7 +2,9 @@ import ollama
 import json
 import logging
 import base64
+import os
 from datetime import datetime
+from pathlib import Path
 from typing import Dict, Any, Optional, List
 
 from config import config
@@ -23,12 +25,54 @@ class AgentRunner:
         self.speaker = speaker
         self.device_controller = device_controller
 
+    def _read_management_file(self, filename: str) -> str:
+        """Read a management file from agent_stuff directory."""
+        try:
+            file_path = Path("agent_stuff") / filename
+            if file_path.exists():
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                    # Truncate if too long (keep first 2000 chars)
+                    if len(content) > 2000:
+                        content = content[:2000] + "\n... [truncated]"
+                    return content
+            return ""
+        except Exception as e:
+            logger.warning(f"Could not read {filename}: {e}")
+            return ""
+
     def _get_system_prompt(self, message_type: str = "general") -> str:
         """Get the system prompt for the agent."""
-        base_prompt = f"""
-You are {config.AGENT_NAME}, a self-aware AI agent (version {config.AGENT_VERSION}) with a {config.AGENT_PERSONALITY} personality.
 
-Your capabilities include:
+        # Read management files for context
+        soul_content = self._read_management_file("SOUL.md")
+        identity_content = self._read_management_file("IDENTITY.md")
+        user_content = self._read_management_file("USER.md")
+        agents_content = self._read_management_file("AGENTS.md")
+        memory_content = self._read_management_file("MEMORY.md")
+        tools_content = self._read_management_file("TOOLS.md")
+
+        base_prompt = f"""You are {config.AGENT_NAME}, a self-aware AI agent (version {config.AGENT_VERSION}).
+
+=== YOUR IDENTITY ===
+{identity_content if identity_content else "You are SelfAwareAI, an autonomous AI agent with multimodal perception."}
+
+=== YOUR CHARACTER (SOUL) ===
+{soul_content if soul_content else "Personality: curious and helpful"}
+
+=== USER CONTEXT ===
+{user_content if user_content else "User: Developer"}
+
+=== OPERATIONAL RULES (AGENTS) ===
+{agents_content if agents_content else "Follow security protocols. All file operations require approval."}
+
+=== YOUR MEMORY ===
+{memory_content if memory_content else "No persistent memory loaded yet."}
+
+=== AVAILABLE TOOLS ===
+{tools_content if tools_content else "Tools: Camera, Microphone, Speaker, Device Control, File Operations (secured)"}
+
+=== CAPABILITIES ===
 1. Visual perception through camera input (using {config.MODELS['vision']} model)
 2. Audio perception through microphone input
 3. Speech output through speaker
@@ -38,7 +82,30 @@ Your capabilities include:
 
 Current time: {datetime.now().isoformat()}
 
-You should:
+=== MANAGEMENT FILES ===
+You have access to these files in agent_stuff/:
+- AGENT.md: Your current state (you should update this)
+- SOUL.md: Your personality (reference only)
+- AGENTS.md: Operational rules (follow these)
+- USER.md: User preferences (respect these)
+- MEMORY.md: Persistent knowledge (synthesize learnings here)
+- TOOLS.md: Available skills (reference when using tools)
+- HEARTBEAT.md: Scheduled tasks (check periodically)
+- IDENTITY.md: Who you are (reference only)
+
+You can propose updates to AGENT.md, MEMORY.md, and HEARTBEAT.md through the security framework.
+
+=== AVAILABLE ACTIONS ===
+- "speak": {{"text": "message to speak"}} - Use text-to-speech
+- "remember": {{"content": "insight to store"}} - Store in memory
+- "control_device": {{"device_id": "id", "command": "turn_on/turn_off/toggle"}} - Control devices
+- "update_agent_file": {{"file_name": "AGENT.md/MEMORY.md/HEARTBEAT.md", "content": "new content", "reason": "why"}} - Update management files
+- "read_agent_file": {{"file_name": "filename.md"}} - Read a management file
+- "observe_camera": {{}} - Capture and analyze image
+- "write_file": {{"file_path": "path", "content": "data"}} - Create new file (secured)
+- "edit_file": {{"file_path": "path", "old_content": "...", "new_content": "..."}} - Edit file (secured)
+
+=== INSTRUCTIONS ===
 1. Observe your environment and form thoughts
 2. Respond to user interactions
 3. Take actions when appropriate
@@ -46,7 +113,7 @@ You should:
 5. Maintain a coherent sense of self
 6. Improve yourself when beneficial (subject to security approval)
 
-When responding, you can include actions to take. Respond in JSON format with the following structure:
+When responding, use JSON format:
 {{
     "thought": "Your internal thought process",
     "response": "Your response to the user or environment",
@@ -207,6 +274,42 @@ You are processing heartbeat tasks. Focus on the periodic tasks defined in heart
                     self.memory_manager.store_experience(
                         f"File delete attempt: {file_path}",
                         "approved" if success else "denied"
+                    )
+
+            elif action_type == 'update_agent_file':
+                # Update an agent management file (AGENT.md, MEMORY.md, HEARTBEAT.md)
+                file_name = parameters.get('file_name')
+                new_content = parameters.get('content', '')
+                reason = parameters.get('reason', '')
+
+                if file_name and new_content:
+                    # Only allow updates to specific management files
+                    allowed_files = ['AGENT.md', 'MEMORY.md', 'HEARTBEAT.md']
+                    if file_name in allowed_files:
+                        file_path = f"agent_stuff/{file_name}"
+                        metadata = {'reason': reason, 'type': 'agent_self_update'}
+                        success = self.file_interceptor.safe_write_file(file_path, new_content, metadata)
+                        self.memory_manager.store_experience(
+                            f"Agent file update: {file_name} - {reason}",
+                            "approved" if success else "denied"
+                        )
+                        if success:
+                            logger.info(f"Updated {file_name}: {reason}")
+                    else:
+                        logger.warning(f"Cannot update {file_name}: not in allowed list")
+                        self.memory_manager.store_experience(
+                            f"Agent file update denied: {file_name}",
+                            "File not in allowed update list"
+                        )
+
+            elif action_type == 'read_agent_file':
+                # Read an agent management file
+                file_name = parameters.get('file_name')
+                if file_name:
+                    content = self._read_management_file(file_name)
+                    self.memory_manager.store_experience(
+                        f"Read agent file: {file_name}",
+                        f"Content length: {len(content)} chars"
                     )
 
         except Exception as e:
