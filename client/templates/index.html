@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Self-Aware AI Agent</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <style>
+        .thought-bubble {
+            background-color: #e9f7fe;
+            border-left: 4px solid #007bff;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .agent-response {
+            background-color: #f0f8ff;
+            border-left: 4px solid #28a745;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        .status-running {
+            background-color: #28a745;
+        }
+        .status-idle {
+            background-color: #ffc107;
+        }
+        .status-stopped {
+            background-color: #dc3545;
+        }
+        .status-thinking {
+            background-color: #17a2b8;
+        }
+        .video-feed {
+            width: 100%;
+            max-width: 640px;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .memory-item {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <div class="col-12">
+                <h1>Self-Aware AI Agent</h1>
+                <p class="text-muted">An autonomous AI with perception, memory, and action capabilities</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Control Panel -->
+            <div class="col-lg-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Agent Control</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label">Status: <span id="status-text">Unknown</span></label>
+                            <span id="status-indicator" class="status-indicator"></span>
+                        </div>
+
+                        <button id="start-btn" class="btn btn-success w-100 mb-2">Start Agent</button>
+                        <button id="stop-btn" class="btn btn-danger w-100 mb-3">Stop Agent</button>
+
+                        <div class="mb-3">
+                            <label class="form-label">Current Thought</label>
+                            <div id="current-thought" class="thought-bubble">
+                                No thoughts yet...
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Last Action</label>
+                            <div id="last-action" class="agent-response">
+                                No actions yet...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h5>Device Control</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="devices-list">
+                            <!-- Devices will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Interaction Area -->
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Agent Interaction</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="mb-3">
+                            <label class="form-label">Send Message to Agent</label>
+                            <div class="input-group">
+                                <input type="text" id="message-input" class="form-control" placeholder="Type your message...">
+                                <button id="send-btn" class="btn btn-primary">Send</button>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Agent Responses</label>
+                            <div id="responses-container" style="max-height: 300px; overflow-y: auto;">
+                                <div class="text-muted">No responses yet...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h5>Camera Feed</h5>
+                    </div>
+                    <div class="card-body text-center">
+                        <img id="camera-feed" class="video-feed" src="https://placehold.co/640x480?text=Camera+Feed" alt="Camera Feed">
+                        <div class="mt-2">
+                            <button id="capture-btn" class="btn btn-secondary">Capture & Analyze</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Memory and Logs -->
+            <div class="col-lg-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Memory & Experiences</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="nav nav-tabs" id="memory-tabs" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="memories-tab" data-bs-toggle="tab" data-bs-target="#memories" type="button" role="tab">Memories</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="experiences-tab" data-bs-toggle="tab" data-bs-target="#experiences" type="button" role="tab">Experiences</button>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="memory-tab-content">
+                            <div class="tab-pane fade show active" id="memories" role="tabpanel">
+                                <div id="memories-list" style="max-height: 300px; overflow-y: auto;">
+                                    <div class="text-muted">No memories yet...</div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="experiences" role="tabpanel">
+                                <div id="experiences-list" style="max-height: 300px; overflow-y: auto;">
+                                    <div class="text-muted">No experiences yet...</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Initialize SocketIO connection
+        const socket = io();
+
+        // DOM Elements
+        const statusText = document.getElementById('status-text');
+        const statusIndicator = document.getElementById('status-indicator');
+        const currentThought = document.getElementById('current-thought');
+        const lastAction = document.getElementById('last-action');
+        const messageInput = document.getElementById('message-input');
+        const sendBtn = document.getElementById('send-btn');
+        const startBtn = document.getElementById('start-btn');
+        const stopBtn = document.getElementById('stop-btn');
+        const responsesContainer = document.getElementById('responses-container');
+        const memoriesList = document.getElementById('memories-list');
+        const experiencesList = document.getElementById('experiences-list');
+        const devicesList = document.getElementById('devices-list');
+
+        // SocketIO Event Handlers
+        socket.on('connect', function() {
+            console.log('Connected to agent server');
+        });
+
+        socket.on('agent_state_update', function(data) {
+            updateAgentStatus(data);
+        });
+
+        socket.on('agent_response', function(data) {
+            displayAgentResponse(data);
+        });
+
+        // UI Event Handlers
+        sendBtn.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        startBtn.addEventListener('click', function() {
+            socket.emit('start_agent');
+        });
+
+        stopBtn.addEventListener('click', function() {
+            socket.emit('stop_agent');
+        });
+
+        // Functions
+        function updateAgentStatus(status) {
+            // Update status text and indicator
+            statusText.textContent = status.status;
+            statusIndicator.className = 'status-indicator status-' + status.status;
+
+            // Update current thought
+            currentThought.textContent = status.current_thought || 'No thoughts yet...';
+
+            // Update last action
+            lastAction.textContent = status.last_action || 'No actions yet...';
+        }
+
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            if (message) {
+                socket.emit('send_message', {message: message});
+                messageInput.value = '';
+            }
+        }
+
+        function displayAgentResponse(data) {
+            const responseElement = document.createElement('div');
+            responseElement.className = 'mb-3';
+            responseElement.innerHTML = `
+                <div class="thought-bubble">
+                    <strong>Thought:</strong> ${data.thought || 'No thought recorded'}
+                </div>
+                <div class="agent-response">
+                    <strong>Response:</strong> ${data.response}
+                </div>
+                <small class="text-muted">${new Date(data.timestamp).toLocaleString()}</small>
+            `;
+
+            responsesContainer.innerHTML = '';
+            responsesContainer.appendChild(responseElement);
+            responsesContainer.scrollTop = responsesContainer.scrollHeight;
+        }
+
+        // Initialize
+        fetch('/api/devices')
+            .then(response => response.json())
+            .then(devices => {
+                updateDevicesList(devices);
+            });
+
+        fetch('/api/memories')
+            .then(response => response.json())
+            .then(memories => {
+                updateMemoriesList(memories);
+            });
+
+        fetch('/api/experiences')
+            .then(response => response.json())
+            .then(experiences => {
+                updateExperiencesList(experiences);
+            });
+
+        function updateDevicesList(devices) {
+            if (Object.keys(devices).length === 0) {
+                devicesList.innerHTML = '<div class="text-muted">No devices registered</div>';
+                return;
+            }
+
+            let html = '';
+            for (const [id, device] of Object.entries(devices)) {
+                html += `
+                    <div class="mb-2">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span>${device.type} (${id})</span>
+                            <div>
+                                <button class="btn btn-sm btn-success" onclick="sendDeviceCommand('${id}', 'turn_on')">On</button>
+                                <button class="btn btn-sm btn-secondary" onclick="sendDeviceCommand('${id}', 'turn_off')">Off</button>
+                            </div>
+                        </div>
+                        <small class="text-muted">State: ${device.state || 'unknown'}</small>
+                    </div>
+                `;
+            }
+            devicesList.innerHTML = html;
+        }
+
+        function updateMemoriesList(memories) {
+            if (memories.length === 0) {
+                memoriesList.innerHTML = '<div class="text-muted">No memories yet...</div>';
+                return;
+            }
+
+            let html = '';
+            memories.forEach(memory => {
+                html += `
+                    <div class="memory-item">
+                        <div><strong>${memory.memory_type}</strong></div>
+                        <div>${memory.content}</div>
+                        <small class="text-muted">${new Date(memory.timestamp).toLocaleString()}</small>
+                    </div>
+                `;
+            });
+            memoriesList.innerHTML = html;
+        }
+
+        function updateExperiencesList(experiences) {
+            if (experiences.length === 0) {
+                experiencesList.innerHTML = '<div class="text-muted">No experiences yet...</div>';
+                return;
+            }
+
+            let html = '';
+            experiences.forEach(exp => {
+                html += `
+                    <div class="memory-item">
+                        <div>${exp.experience}</div>
+                        ${exp.outcome ? `<div><strong>Outcome:</strong> ${exp.outcome}</div>` : ''}
+                        <small class="text-muted">${new Date(exp.timestamp).toLocaleString()}</small>
+                    </div>
+                `;
+            });
+            experiencesList.innerHTML = html;
+        }
+
+        function sendDeviceCommand(deviceId, command) {
+            fetch('/api/control-device', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    device_id: deviceId,
+                    command: command
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Device command response:', data);
+                // Refresh device list
+                fetch('/api/devices')
+                    .then(response => response.json())
+                    .then(devices => {
+                        updateDevicesList(devices);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>

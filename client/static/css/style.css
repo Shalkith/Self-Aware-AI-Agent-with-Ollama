@@ -1,0 +1,91 @@
+/* Custom styles for the AI agent interface */
+
+body {
+    background-color: #f8f9fa;
+}
+
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.card-header {
+    background-color: #fff;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    font-weight: 500;
+}
+
+.thought-bubble {
+    background-color: #e9f7fe;
+    border-left: 4px solid #007bff;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 5px;
+    font-style: italic;
+}
+
+.agent-response {
+    background-color: #f0f8ff;
+    border-left: 4px solid #28a745;
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 5px;
+}
+
+.status-indicator {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.status-running {
+    background-color: #28a745;
+}
+
+.status-idle {
+    background-color: #ffc107;
+}
+
+.status-stopped {
+    background-color: #dc3545;
+}
+
+.status-thinking {
+    background-color: #17a2b8;
+}
+
+.status-error {
+    background-color: #fd7e14;
+}
+
+.video-feed {
+    width: 100%;
+    max-width: 640px;
+    height: auto;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.memory-item {
+    border-bottom: 1px solid #eee;
+    padding: 10px 0;
+}
+
+.nav-tabs .nav-link.active {
+    background-color: #f8f9fa;
+    border-bottom-color: #f8f9fa;
+}
+
+.tab-content {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-top: none;
+    padding: 15px;
+}
+
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}

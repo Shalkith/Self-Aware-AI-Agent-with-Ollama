@@ -1,0 +1,10 @@
+flask==3.0.3
+flask-socketio==5.6.1
+ollama==0.6.1
+opencv-python==4.13.0.92
+pyaudio==0.2.14
+pyttsx3==2.90
+gpiozero==2.0.1
+requests==2.34.2
+pillow==10.3.0
+numpy==1.26.4
