@@ -51,7 +51,7 @@ def check_models_before_boot():
     ]
 
     # Add security model if different
-    security_model = config.MODELS.get('security', config.MODELS['reasoning'])
+    security_model = config.MODELS['security']
     if security_model not in required_models:
         required_models.append(security_model)
 

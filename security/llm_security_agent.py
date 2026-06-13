@@ -20,7 +20,7 @@ class LLMSecurityAgent:
         self.deny_by_default = config.SECURITY_DENY_BY_DEFAULT
         self.approval_timeout = config.SECURITY_APPROVAL_TIMEOUT
         self.ollama_url = config.OLLAMA_URL
-        self.security_model = config.MODELS.get('reasoning', 'llama3')
+        self.security_model = config.MODELS['security']
 
     def hash_file_content(self, content: str) -> str:
         """Generate SHA-256 hash of file content."""

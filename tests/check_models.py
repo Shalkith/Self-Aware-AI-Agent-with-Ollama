@@ -10,7 +10,7 @@ import os
 from pathlib import Path
 
 # Add project root to Python path
-project_root = Path(__file__).parent
+project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 from config import config
@@ -60,8 +60,8 @@ def check_all_models():
         config.MODELS['creativity'],
     ]
 
-    # Add security model if different
-    security_model = config.MODELS.get('security', config.MODELS['reasoning'])
+    # Add security model
+    security_model = config.MODELS['security']
     if security_model not in required_models:
         required_models.append(security_model)
 
@@ -95,7 +95,7 @@ def pull_missing_models():
         config.MODELS['creativity'],
     ]
 
-    security_model = config.MODELS.get('security', config.MODELS['reasoning'])
+    security_model = config.MODELS['security']
     if security_model not in required_models:
         required_models.append(security_model)
 

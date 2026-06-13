@@ -35,13 +35,14 @@ def main():
     print("Self-Aware AI Agent Test Runner")
     print("=" * 40)
 
-    # Change to project directory
-    project_dir = Path(__file__).parent
+    # Change to tests directory
+    tests_dir = Path(__file__).parent
+    project_dir = tests_dir.parent
     os.chdir(project_dir)
 
-    # Test scripts to run
+    # Test scripts to run (relative to project root)
     test_scripts = [
-        'test_setup.py',
+        'tests/test_setup.py',
         # Add more test scripts here as needed
     ]
 

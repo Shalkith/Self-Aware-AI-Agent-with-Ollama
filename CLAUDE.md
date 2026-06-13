@@ -62,6 +62,11 @@ ollama_self_aware_robot/
 │   └── memory_manager.py
 ├── devices/                 # Device control
 │   └── device_controller.py
+├── tests/                   # Test suite
+│   ├── test_setup.py
+│   ├── test_senses.py
+│   ├── test_security_agent.py
+│   └── ...
 ├── client/                  # Web interface
 │   ├── templates/
 │   └── static/
@@ -122,7 +127,19 @@ The security framework uses an LLM to evaluate all code modification requests:
 
 ## Testing
 
-Run the test suite: `python test_setup.py`
+Run the test suite:
+```bash
+# Run all tests
+python tests/run_tests.py
+
+# Run individual tests
+python tests/test_setup.py        # Setup verification
+python tests/test_senses.py        # Hardware senses test
+python tests/check_models.py       # Model availability check
+python tests/verify_config_models.py  # Config verification
+```
+
+See `tests/README.md` for complete test documentation.
 
 ## Documentation
 

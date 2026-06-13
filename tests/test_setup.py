@@ -8,7 +8,7 @@ import os
 from pathlib import Path
 
 # Add the project root to the Python path
-project_root = Path(__file__).parent
+project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 def test_imports():
@@ -157,7 +157,8 @@ def test_security_components():
 def test_nanobot_files():
     """Test nanobot style agent files."""
     try:
-        nanobot_dir = Path("nanobot_style")
+        project_root = Path(__file__).parent.parent
+        nanobot_dir = project_root / "nanobot_style"
         agent_md = nanobot_dir / "agent.md"
         heartbeat_md = nanobot_dir / "heartbeat.md"
 

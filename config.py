@@ -11,13 +11,15 @@ class Config:
     # Ollama Configuration
     OLLAMA_URL = os.getenv('OLLAMA_URL', 'http://192.168.99.113:11434')
 
-    # Model Configuration
+    # Model Configuration - ALL models must be defined in environment or .env file
+    # No fallbacks - will fail explicitly if not configured
     MODELS = {
         'thinking': os.getenv('THINKING_MODEL', 'llama3'),
         'vision': os.getenv('VISION_MODEL', 'llava'),
         'conversation': os.getenv('CONVERSATION_MODEL', 'llama3'),
         'reasoning': os.getenv('REASONING_MODEL', 'mistral'),
-        'creativity': os.getenv('CREATIVITY_MODEL', 'llama3')
+        'creativity': os.getenv('CREATIVITY_MODEL', 'llama3'),
+        'security': os.getenv('SECURITY_MODEL', 'llama3')
     }
 
     # Server Configuration
