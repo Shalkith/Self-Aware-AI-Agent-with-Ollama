@@ -21,7 +21,7 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for detailed architecture docum
 
 ```
 ollama_self_aware_robot/
-├── nanobot_style/           # Nanobot-style agent components
+├── agent_stuff/             # Agent components
 │   ├── agent/               # Main agent loop and runner
 │   │   ├── __init__.py
 │   │   ├── loop.py

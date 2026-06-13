@@ -50,13 +50,13 @@ def reset_database():
         print(f"[FAIL] Error resetting database: {e}")
         return False
 
-def reset_nanobot_files():
-    """Reset nanobot style agent management files to defaults."""
+def reset_agent_files():
+    """Reset agent management files to defaults."""
     try:
-        nanobot_dir = Path("nanobot_style")
+        agent_dir = Path("agent_stuff")
 
         # Reset agent.md
-        agent_md_path = nanobot_dir / "agent.md"
+        agent_md_path = agent_dir / "agent.md"
         if agent_md_path.exists():
             agent_md_path.unlink()
 
@@ -103,7 +103,7 @@ The agent should update this file when its state or configuration changes.
         print("[PASS] agent.md reset to default")
 
         # Reset heartbeat.md
-        heartbeat_md_path = nanobot_dir / "heartbeat.md"
+        heartbeat_md_path = agent_dir / "heartbeat.md"
         if heartbeat_md_path.exists():
             heartbeat_md_path.unlink()
 
@@ -136,7 +136,7 @@ This file is checked periodically by the self-aware AI agent. Add tasks below th
 
         return True
     except Exception as e:
-        print(f"[FAIL] Error resetting nanobot files: {e}")
+        print(f"[FAIL] Error resetting agent files: {e}")
         return False
 
 def reset_config():
@@ -154,11 +154,11 @@ def main():
     """Main reset function."""
     parser = argparse.ArgumentParser(description="Reset the Self-Aware AI Agent")
     parser.add_argument("--full", action="store_true",
-                        help="Perform full reset (clear database file and nanobot files)")
+                        help="Perform full reset (clear database file and agent files)")
     parser.add_argument("--memory-only", action="store_true",
                         help="Reset only memories and experiences")
-    parser.add_argument("--nanobot-reset", action="store_true",
-                        help="Reset nanobot style agent files only")
+    parser.add_argument("--agent-files-reset", action="store_true",
+                        help="Reset agent management files only")
     parser.add_argument("--config", action="store_true",
                         help="Reset configuration to defaults")
 
@@ -167,13 +167,13 @@ def main():
     print("Self-Aware AI Agent Reset Script")
     print("=" * 40)
 
-    if args.nanobot_reset:
-        print("\nResetting nanobot style agent files...")
-        success = reset_nanobot_files()
+    if args.agent_files_reset:
+        print("\nResetting agent management files...")
+        success = reset_agent_files()
         if success:
-            print("[PASS] Nanobot files reset completed successfully")
+            print("[PASS] Agent files reset completed successfully")
         else:
-            print("[FAIL] Nanobot files reset failed")
+            print("[FAIL] Agent files reset failed")
             return 1
 
     elif args.full or not any([args.memory_only, args.config]):
@@ -185,12 +185,12 @@ def main():
             print("[FAIL] Database reset failed")
             return 1
 
-        # Reset nanobot files as part of full reset
-        success = reset_nanobot_files()
+        # Reset agent files as part of full reset
+        success = reset_agent_files()
         if success:
-            print("[PASS] Nanobot files reset completed")
+            print("[PASS] Agent files reset completed")
         else:
-            print("[FAIL] Nanobot files reset failed")
+            print("[FAIL] Agent files reset failed")
             return 1
 
     if args.memory_only:
@@ -211,7 +211,7 @@ def main():
             print("[FAIL] Configuration reset failed")
             return 1
 
-    if not any([args.full, args.memory_only, args.config, args.nanobot_reset]):
+    if not any([args.full, args.memory_only, args.config, args.agent_files_reset]):
         # Default behavior: clear memories only
         print("\nResetting agent memory (default)...")
         success = reset_agent_memory()

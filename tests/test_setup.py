@@ -50,8 +50,8 @@ def test_local_modules():
         'devices.device_controller',
         'security.llm_security_agent',
         'security.llm_file_interceptor',
-        'nanobot_style.agent.loop',
-        'nanobot_style.agent.runner'
+        'agent_stuff.agent.loop',
+        'agent_stuff.agent.runner'
     ]
 
     print("\nTesting local module imports...")
@@ -154,22 +154,22 @@ def test_security_components():
         print(f"  [FAIL] Security components test failed: {e}")
         return False
 
-def test_nanobot_files():
-    """Test nanobot style agent files."""
+def test_agent_files():
+    """Test agent management files."""
     try:
         project_root = Path(__file__).parent.parent
-        nanobot_dir = project_root / "nanobot_style"
-        agent_md = nanobot_dir / "agent.md"
-        heartbeat_md = nanobot_dir / "heartbeat.md"
+        agent_dir = project_root / "agent_stuff"
+        agent_md = agent_dir / "agent.md"
+        heartbeat_md = agent_dir / "heartbeat.md"
 
         if agent_md.exists() and heartbeat_md.exists():
-            print("  [PASS] Nanobot style agent files exist")
+            print("  [PASS] Agent management files exist")
             return True
         else:
-            print("  [FAIL] Nanobot style agent files missing")
+            print("  [FAIL] Agent management files missing")
             return False
     except Exception as e:
-        print(f"  [FAIL] Nanobot files test failed: {e}")
+        print(f"  [FAIL] Agent files test failed: {e}")
         return False
 
 def main():
@@ -185,7 +185,7 @@ def main():
     memory_ok = test_memory_manager()
     device_ok = test_device_controller()
     security_ok = test_security_components()
-    nanobot_ok = test_nanobot_files()
+    agent_files_ok = test_agent_files()
 
     print("\nTest Summary:")
     print(f"  Module imports: {'[PASS]' if imports_ok else '[FAIL]'}")
@@ -193,9 +193,9 @@ def main():
     print(f"  Memory manager: {'[PASS]' if memory_ok else '[FAIL]'}")
     print(f"  Device controller: {'[PASS]' if device_ok else '[FAIL]'}")
     print(f"  Security components: {'[PASS]' if security_ok else '[FAIL]'}")
-    print(f"  Nanobot files: {'[PASS]' if nanobot_ok else '[FAIL]'}")
+    print(f"  Agent files: {'[PASS]' if agent_files_ok else '[FAIL]'}")
 
-    if all([imports_ok, local_imports_ok, memory_ok, device_ok, security_ok, nanobot_ok]):
+    if all([imports_ok, local_imports_ok, memory_ok, device_ok, security_ok, agent_files_ok]):
         print("\n[PASS] All tests passed! The setup is working correctly.")
         return 0
     else:

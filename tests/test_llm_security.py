@@ -47,7 +47,7 @@ def test_llm_security_framework():
     try:
         approval = security_agent.request_approval(
             operation='test_write',
-            file_path='nanobot_style/agent.md',
+            file_path='agent_stuff/agent.md',
             content='print("Hello, World!")',
             metadata={'test': True, 'purpose': 'testing security system'}
         )
@@ -61,7 +61,7 @@ def test_llm_security_framework():
     print("\n4. Testing Safe File Write with LLM Evaluation...")
     try:
         success = file_interceptor.safe_write_file(
-            file_path='nanobot_style/test_output.txt',
+            file_path='agent_stuff/test_output.txt',
             content='# This is a test file for security testing\nprint("Security test")',
             metadata={'test': True, 'purpose': 'security framework testing'}
         )
@@ -74,8 +74,8 @@ def test_llm_security_framework():
     # Test 5: Path safety checking
     print("\n5. Testing Path Safety Checking...")
     try:
-        safe_path = security_agent.is_safe_path('nanobot_style/memory/test.py')
-        critical_file = security_agent.is_critical_file('nanobot_style/agent/loop.py')
+        safe_path = security_agent.is_safe_path('agent_stuff/memory/test.py')
+        critical_file = security_agent.is_critical_file('agent_stuff/agent/loop.py')
         print(f"  [PASS] Path safety checks completed")
         print(f"      Safe path check: {safe_path}")
         print(f"      Critical file check: {critical_file}")

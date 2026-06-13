@@ -14,7 +14,7 @@ from perception.speaker import SpeakerPerception
 from devices.device_controller import DeviceController
 from security.llm_security_agent import LLMSecurityAgent
 from security.llm_file_interceptor import LLMFileOperationInterceptor
-from nanobot_style.agent.runner import AgentRunner
+from agent_stuff.agent.runner import AgentRunner
 
 logger = logging.getLogger(__name__)
 

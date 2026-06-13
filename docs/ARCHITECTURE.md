@@ -1,6 +1,6 @@
 # Self-Aware AI Agent Architecture
 
-This document describes the architecture of the Self-Aware AI Agent, which follows patterns similar to nanobot and other open-source AI agents.
+This document describes the architecture of the Self-Aware AI Agent, which follows modular agent design patterns similar to other open-source AI agents.
 
 ## Architecture Overview
 
@@ -8,7 +8,7 @@ The agent follows a modular architecture with these key components:
 
 ```
 self_aware_agent/
-├── nanobot_style/           # Nanobot-style agent components
+├── agent_stuff/           # Nanobot-style agent components
 │   ├── agent/               # Main agent loop and runner
 │   │   ├── __init__.py
 │   │   ├── loop.py          # Main agent loop
@@ -37,7 +37,7 @@ self_aware_agent/
 
 ## Agent Loop Pattern
 
-Following nanobot's pattern, the agent uses a main loop that:
+Following agent design patterns, the agent uses a main loop that:
 
 1. **Receives Messages**: From various sources (web interface, heartbeat, sensors)
 2. **Processes with LLM**: Sends context to LLM for decision making
@@ -47,14 +47,14 @@ Following nanobot's pattern, the agent uses a main loop that:
 
 ### Main Components
 
-#### AgentLoop (`nanobot_style/agent/loop.py`)
+#### AgentLoop (`agent_stuff/agent/loop.py`)
 - Central processing engine
 - Manages perception systems (camera, microphone)
 - Handles autonomous thinking cycles
 - Processes heartbeat tasks
 - Maintains session state
 
-#### AgentRunner (`nanobot_style/agent/runner.py`)
+#### AgentRunner (`agent_stuff/agent/runner.py`)
 - LLM interaction handler
 - Tool execution manager
 - Action processing pipeline
@@ -163,15 +163,15 @@ python agent_server.py
 
 ### Command Line Mode
 ```bash
-python -m nanobot_style.agent.main --mode interactive
-python -m nanobot_style.agent.main --mode autonomous
-python -m nanobot_style.agent.main --mode heartbeat
+python -m agent_stuff.agent.main --mode interactive
+python -m agent_stuff.agent.main --mode autonomous
+python -m agent_stuff.agent.main --mode heartbeat
 ```
 
 ## Extending the Agent
 
 ### Adding New Actions
-1. Add action type to `execute_action` in `nanobot_style/agent/runner.py`
+1. Add action type to `execute_action` in `agent_stuff/agent/runner.py`
 2. Implement security checks if needed
 3. Add to system prompt documentation
 

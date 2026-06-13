@@ -13,7 +13,7 @@ import sys
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from nanobot_style.agent.loop import AgentLoop
+from agent_stuff.agent.loop import AgentLoop
 from config import config
 
 # Configure logging

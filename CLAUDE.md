@@ -1,6 +1,6 @@
 # Self-Aware AI Agent - Claude Code Project
 
-This project implements a self-aware AI agent with multimodal perception capabilities, LLM-based security framework, and nanobot-style architecture.
+This project implements a self-aware AI agent with multimodal perception capabilities, LLM-based security framework, and modular agent architecture.
 
 ## Project Overview
 
@@ -26,7 +26,7 @@ The Self-Aware AI Agent is designed to:
 - **Configurable Policies**: Flexible security settings
 
 ### Nanobot-Style Architecture
-- **Agent Loop Pattern**: Main processing loop similar to nanobot
+- **Agent Loop Pattern**: Main processing loop agent-based design pattern
 - **Agent Management Files**: `agent.md` and `heartbeat.md` for configuration and tasks
 - **Modular Structure**: Clean separation of concerns
 - **Multiple Operation Modes**: Web, CLI, autonomous, heartbeat
@@ -42,7 +42,7 @@ The Self-Aware AI Agent is designed to:
 
 ```
 ollama_self_aware_robot/
-├── nanobot_style/           # Nanobot-style agent components
+├── agent_stuff/             # Agent components
 │   ├── agent/               # Main agent components
 │   │   ├── __init__.py
 │   │   ├── loop.py         # Main agent loop
